@@ -18,12 +18,15 @@ private:
     QNetworkReply *m_nReply;
 
     ListModel *m_searchModel;
+    ListModel *m_playlistModel;
 public:
     explicit Exua(QObject *parent = 0);
 
     void searchVideo(QString str);
+    void getPlaylist(QString exid);
 
-    ListModel* searchModel();
+    ListModel* searchModel() { return m_searchModel; }
+    ListModel* playlistModel() { return m_playlistModel; }
     
 signals:
 
@@ -31,6 +34,7 @@ private slots:
 
 public slots:
     void searchReply(QNetworkReply*);
+    void playlistReply(QNetworkReply*);
 
 };
 
