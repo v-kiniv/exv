@@ -4,20 +4,28 @@ import QtGraphicalEffects 1.0
 
 Rectangle {
     id: rec
-    width: 500
-    height: 360
+    width: 800
+    height: 460
     color: "#fff"
 
-    MouseArea {
-        anchors.fill: parent
-        onClicked: {
+    property string mainTitle: "No Title"
+    property string subTitle: "No Title"
+    property string coverUrl: ""
+    property bool showPlaylist: false
 
-            //            exv.testSlot()
-            //            Qt.quit();
-            //            videoPlayerItem.playVideo()
-            console.log("Looog")
-        }
-    }
+
+
+
+//    MouseArea {
+//        anchors.fill: parent
+//        onClicked: {
+
+//            //            exv.testSlot()
+//            //            Qt.quit();
+//            //            videoPlayerItem.playVideo()
+//            console.log("Looog")
+//        }
+//    }
 
 
     VideoView {
@@ -26,6 +34,12 @@ Rectangle {
     }
 
     SearchPanel {
+        visible: true
         id: searchPanel
     }
+
+
+
+
+
 }

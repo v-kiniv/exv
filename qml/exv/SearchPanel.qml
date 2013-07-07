@@ -73,6 +73,14 @@ Rectangle {
 
                 onClicked: {
                     console.log("Index"+index+"; Exid: "+exid)
+                    exv.getPlaylist(exid)
+                    videoView.enabled = true
+                    searchPanel.visible = false
+                    searchPanel.enabled = false
+                    mainTitle = name
+                    coverUrl = image
+                    showPlaylist = true
+
 
                 }
 
@@ -131,8 +139,7 @@ Rectangle {
                     console.log("SEARCH")
                     
                     exv.searchVideo(searchInput.text)
-                    searchList.update()
-                    //                            searchList.update()
+//                    searchInput.focus = false
                 }
             }
         }
