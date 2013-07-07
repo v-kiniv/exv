@@ -9,6 +9,11 @@ Rectangle {
     color: "#414242"
     anchors.fill: parent
 
+    function focus2List() {
+        searchInput.focus = false
+        searchList.focus = true
+    }
+
     // Search ListView
     Component {
            id: highlightBar
@@ -34,6 +39,7 @@ Rectangle {
                     color: "#b8dffd"
                     text: name
                     font.pointSize: 16
+                    renderType: Text.NativeRendering
                 }
                 Row {
                     spacing: 20
@@ -46,6 +52,7 @@ Rectangle {
                         height: 100
                         color: "#f9f4f4"
                         text: desc
+                        renderType: Text.NativeRendering
                     }
                 }
 
@@ -74,6 +81,7 @@ Rectangle {
                 onClicked: {
                     console.log("Index"+index+"; Exid: "+exid)
                     exv.getPlaylist(exid)
+                    videoView.visible = true
                     videoView.enabled = true
                     searchPanel.visible = false
                     searchPanel.enabled = false
@@ -131,6 +139,7 @@ Rectangle {
                 horizontalAlignment: TextInput.AlignLeft
                 selectionColor: "#8fd1ff"
                 font.pixelSize: 14
+                renderType: Text.NativeRendering
                 onFocusChanged: {
                     if(searchInput.text == "Search...")
                         searchInput.text = ""

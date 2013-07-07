@@ -51,6 +51,9 @@ public:
 private slots:
   void handleItemChange();
 
+public slots:
+  QObject* getItem(int index) { return m_list.at(index); }
+
 private:
   ListItem* m_prototype;
   QList<ListItem*> m_list;

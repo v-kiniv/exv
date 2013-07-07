@@ -93,6 +93,12 @@ Rectangle {
                 //               }
                 seekBar.position = mediaplayer.position
             }
+
+            onStopped: {
+                mediaplayer.source = playlistModel.getItem(++currentFileIndex).getUrl();
+                subTitle = playlistModel.getItem(currentFileIndex).getName();
+                mediaplayer.play()
+            }
         }
         VideoOutput {
             id: videoout
@@ -117,7 +123,7 @@ Rectangle {
             }
 
             Keys.onTabPressed: {
-                playlistPanel.visible = !playlistPanel.visible
+                showPlaylist = !showPlaylist
             }
 
             Keys.onUpPressed: {
@@ -134,21 +140,31 @@ Rectangle {
 
             Keys.onEscapePressed: {
                 mediaplayer.pause()
+                videoView.visible = false
                 videoView.enabled = false
                 showPlaylist = false
                 searchPanel.visible = true
                 searchPanel.enabled = true
+                searchPanel.focus2List()
             }
         }
     }
 
-    FastBlur {
-        anchors.fill: parent
-        source: videoout
-        radius: 64
-        transparentBorder: false
-        visible: mediaplayer.playbackState == MediaPlayer.PausedState
-    }
+//    FastBlur {
+//        anchors.fill: parent
+//        source: videoout
+//        radius: 64
+//        transparentBorder: false
+//        visible: mediaplayer.playbackState == MediaPlayer.PausedState
+//    }
+
+       BrightnessContrast {
+           anchors.fill: parent
+           source: videoout
+           brightness: -0.7
+           contrast: 0
+           visible: mediaplayer.playbackState == MediaPlayer.PausedState
+       }
 
     Item {
         id: coverTitle
@@ -174,6 +190,7 @@ Rectangle {
             text: mainTitle
             horizontalAlignment: Text.AlignHCenter
             font.pixelSize: 26
+            renderType: Text.NativeRendering
         }
         Text {
             id: secondTitle
@@ -183,6 +200,7 @@ Rectangle {
             text: subTitle
             horizontalAlignment: Text.AlignHCenter
             font.pixelSize: 16
+            renderType: Text.NativeRendering
         }
 
         }
@@ -309,7 +327,7 @@ Rectangle {
     Timer {
         id: panelTimer
         interval: 4000
-        running: true
+        running: false
         repeat: false
         onTriggered: {
             if (panel.show)

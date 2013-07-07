@@ -5,10 +5,12 @@ import QtGraphicalEffects 1.0
 Rectangle {
     id: playlistPanel
     visible: showPlaylist
+    enabled: showPlaylist
     width: rec.width / 2
     height: parent.height
     color: "#5a5a57"
     opacity: 0.7
+
     
     Component {
         id: highlightBar
@@ -39,6 +41,7 @@ Rectangle {
                 color: "#b8dffd"
                 text: index+1 + ". " +name
                 font.pointSize: 12
+                renderType: Text.NativeRendering
             }
             
             states: State {
@@ -67,8 +70,11 @@ Rectangle {
                     mediaplayer.source = url
                     videoPlayerItem.playVideo()
                     subTitle = name
-                    showPlaylist = false
+//                    showPlaylist = false
                     videoout.focus = true
+//                    console.log(playlistModel.getItem(1).getUrl());
+                    currentFileIndex = index
+                    showPlaylist = false
                 }
                 
                 onDoubleClicked: {

@@ -23,4 +23,8 @@ public:
 private:
   QString m_name;
   QString m_url;
+
+public slots:
+  QString getName() const { return m_name; }
+  QString getUrl() const { return m_url; }
 };
