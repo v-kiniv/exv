@@ -8,9 +8,10 @@ int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
 
-    Exv exv;
+
     QtQuick2ApplicationViewer viewer;
-    exv.setViewer(&viewer);
+//    exv.setViewer(&viewer);
+    Exv exv(&viewer);
     viewer.rootContext()->setContextProperty("exv", &exv);
     viewer.setMainQmlFile(QStringLiteral("qml/exv/main.qml"));
     viewer.showExpanded();

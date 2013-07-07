@@ -12,14 +12,20 @@ QML_IMPORT_PATH =
 # CONFIG += mobility
 # MOBILITY +=
 
+QT += core network qml
+
 # The .cpp file which was generated for your project. Feel free to hack it.
 HEADERS += exv.h \
-    exv.h \
-    exua.h
+           exv.h \
+           exua.h \
+           listmodel.h \
+    vitem.h
 
 SOURCES += main.cpp \
-exv.cpp \
-    exua.cpp
+           exv.cpp \
+           exua.cpp \
+           listmodel.cpp \
+    vitem.cpp
 
 
 

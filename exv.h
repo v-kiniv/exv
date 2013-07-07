@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include "qtquick2applicationviewer.h"
+#include "exua.h"
 
 class Exv : public QObject
 {
@@ -11,8 +12,10 @@ class Exv : public QObject
 private:
     QtQuick2ApplicationViewer *m_Viewer;
     bool m_bFullScreen;
+    Exua *m_exua;
+
 public:
-    explicit Exv(QObject *parent = 0);
+    explicit Exv(QtQuick2ApplicationViewer *viewer, QObject *parent = 0);
     void setViewer(QtQuick2ApplicationViewer* v) { m_Viewer = v; }
     
 signals:
@@ -20,6 +23,7 @@ signals:
 public slots:
     void testSlot();
     void toggleFullscreen();
+    void searchVideo(QString);
     
 };
 

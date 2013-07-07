@@ -1,11 +1,17 @@
 #include "exv.h"
 
 #include <QDebug>
+#include <QQmlContext>
 
-Exv::Exv(QObject *parent) :
-    QObject(parent)
+Exv::Exv(QtQuick2ApplicationViewer *viewer, QObject *parent) :
+    QObject(parent), m_Viewer(viewer)
 {
     m_bFullScreen = false;
+
+    m_exua = new Exua();
+    m_Viewer->rootContext()->setContextProperty("searchModel", m_exua->searchModel());
+    m_exua->searchVideo("X-files");
+
 }
 
 
@@ -22,4 +28,10 @@ void Exv::toggleFullscreen()
         m_Viewer->showFullScreen();
 
     m_bFullScreen = !m_bFullScreen;
+}
+
+
+void Exv::searchVideo(QString str) {
+    m_exua->searchVideo(str);
+//    m_exua->searchModel()->clear();
 }
