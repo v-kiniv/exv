@@ -7,34 +7,42 @@ Rectangle {
     anchors.fill: parent
     color: "#000"
 
+    onHeightChanged: {
+        panel.enabledAnimation = false
+        panel.expandedY = rec.height - panel.height
+        panel.hiddenY = rec.height - 1
+        panel.y = rec.height - panel.height
+        panel.enabledAnimation = true
+    }
+
     Item {
         //        visible: false;
         id: videoPlayerItem
         anchors.fill: parent
-        property bool isVideoPlaying: mediaplayer.hasVideo // property to know if videoPlaying id ongoing or not
+        property bool isPlaying: mediaplayer.playbackState == MediaPlayer.PlayingState // property to know if videoPlaying id ongoing or not
         /*
-                                                                                                       Functions Which starts Video Playing
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   */
+                                                                                                               Functions Which starts Video Playing
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  */
         function playVideo() {
-//            mediaplayer.volume = 1.0
+            //            mediaplayer.volume = 1.0
             mediaplayer.play()
         }
         /*
-                                                                                                       Function Which Stops Video Playing
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   */
+                                                                                                               Function Which Stops Video Playing
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  */
         function stopVideo() {
             mediaplayer.stop()
         }
         /*
-                                                                                                       Function Which Stops Video Playing
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   */
+                                                                                                               Function Which Stops Video Playing
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  */
         function pauseVideo() {
             mediaplayer.pause()
         }
 
         function playPauseVideo() {
 
-//                        mediaplayer.volume = 1.0
+            //                        mediaplayer.volume = 1.0
             if (mediaplayer.playbackState == MediaPlayer.PlayingState) {
                 mediaplayer.pause()
                 //                panel.show = true
@@ -42,6 +50,38 @@ Rectangle {
                 mediaplayer.play()
                 //                panel.show = false
             }
+        }
+
+        function next() {
+            mediaplayer.source = playlistModel.getItem(++currentFileIndex).getUrl()
+            subTitle = playlistModel.getItem(currentFileIndex).getName()
+            mediaplayer.play()
+        }
+
+        function prev() {
+            mediaplayer.source = playlistModel.getItem(--currentFileIndex).getUrl()
+            subTitle = playlistModel.getItem(currentFileIndex).getName()
+            mediaplayer.play()
+        }
+
+        function goSearch() {
+            mediaplayer.pause()
+            videoView.visible = false
+            videoView.enabled = false
+            showPlaylist = false
+            searchPanel.visible = true
+            searchPanel.enabled = true
+            searchPanel.focus2List()
+        }
+
+        function toggleFullscreen() {
+            console.log("Full")
+            exv.toggleFullscreen()
+//            panel.visible = false
+//            panel.enabledAnimation = false
+//            panel.y = rec.height - panel.height
+//            panel.enabledAnimation = true
+//            panel.visible = true
         }
 
         MouseArea {
@@ -53,11 +93,7 @@ Rectangle {
                 videoPlayerItem.playPauseVideo()
             }
             onDoubleClicked: {
-                console.log("Full")
-                exv.toggleFullscreen()
-
-                //                mediaplayer.play()
-                panel.show = false
+                videoPlayerItem.toggleFullscreen()
             }
 
             onPositionChanged: {
@@ -68,25 +104,27 @@ Rectangle {
                 if (panelTimer.running)
                     panelTimer.stop()
 
-                if(mediaplayer.playbackState == MediaPlayer.PlayingState)
+                if (mediaplayer.playbackState == MediaPlayer.PlayingState)
                     panelTimer.start()
             }
 
-                        cursorShape: (panel.show || playlistPanel.show) ? Qt.ArrowCursor : Qt.BlankCursor
+            cursorShape: (panel.show
+                          || playlistPanel.show) ? Qt.ArrowCursor : Qt.BlankCursor
         }
 
         /*
-                                                                                                       Actual QML based Video Component
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   */
+                                                                                                               Actual QML based Video Component
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  */
         MediaPlayer {
             id: mediaplayer
             //                        source: "/home/yuberion/Изображения/Camera_2013_05/2013-04-10 19.02.02.mp4"
             //            source: "/home/yuberion/Изображения/Camera_2013_05/2013-03-23 19.35.59.mp4"
             //            source: "http://www.ex.ua/show/1174748/e6fbeed5e113ffc69b5ac7b82687d6cf.flv"
-//            source: "/home/yuberion/e6fbeed5e113ffc69b5ac7b82687d6cf.flv"
-            volume: 1.0
+            //            source: "/home/yuberion/e6fbeed5e113ffc69b5ac7b82687d6cf.flv"
+//            volume: 1.0
 
             //            source: "http://www.ex.ua/get/27196651"
+
             onPositionChanged: {
                 //               if (mediaplayer.position > 1000) {
                 //                   seekBar.position = mediaplayer.position;
@@ -94,10 +132,13 @@ Rectangle {
                 seekBar.position = mediaplayer.position
             }
 
+            onVolumeChanged: {
+                console.log("volume changed: " + mediaplayer.volume)
+                volumeBar.position = parseInt(mediaplayer.volume * 100)
+            }
+
             onStopped: {
-                mediaplayer.source = playlistModel.getItem(++currentFileIndex).getUrl();
-                subTitle = playlistModel.getItem(currentFileIndex).getName();
-                mediaplayer.play()
+                videoPlayerItem.next()
             }
         }
         VideoOutput {
@@ -127,82 +168,82 @@ Rectangle {
             }
 
             Keys.onUpPressed: {
-                console.log("Volume: "+mediaplayer.volume)
-                if(mediaplayer.volume < 1)
+                console.log("Volume: " + mediaplayer.volume)
+                if (mediaplayer.volume < 1)
                     mediaplayer.volume += 0.1
             }
 
             Keys.onDownPressed: {
-                console.log("Volume: "+mediaplayer.volume)
-                if(mediaplayer.volume > 0)
+                console.log("Volume: " + mediaplayer.volume)
+                if (mediaplayer.volume > 0)
                     mediaplayer.volume -= 0.1
             }
 
             Keys.onEscapePressed: {
-                mediaplayer.pause()
-                videoView.visible = false
-                videoView.enabled = false
-                showPlaylist = false
-                searchPanel.visible = true
-                searchPanel.enabled = true
-                searchPanel.focus2List()
+                videoPlayerItem.goSearch()
+            }
+
+            Keys.onEnterPressed: {
+                videoPlayerItem.toggleFullscreen()
             }
         }
     }
 
-//    FastBlur {
-//        anchors.fill: parent
-//        source: videoout
-//        radius: 64
-//        transparentBorder: false
-//        visible: mediaplayer.playbackState == MediaPlayer.PausedState
-//    }
 
-       BrightnessContrast {
-           anchors.fill: parent
-           source: videoout
-           brightness: -0.7
-           contrast: 0
-           visible: mediaplayer.playbackState == MediaPlayer.PausedState
-       }
+    //    FastBlur {
+    //        anchors.fill: parent
+    //        source: videoout
+    //        radius: 64
+    //        transparentBorder: false
+    //        visible: mediaplayer.playbackState == MediaPlayer.PausedState
+    //    }
+    BrightnessContrast {
+        anchors.fill: parent
+        source: videoout
+        brightness: -0.7
+        contrast: 0
+        visible: mediaplayer.playbackState == MediaPlayer.PausedState
+    }
 
     Item {
         id: coverTitle
         width: 500
         height: rec.height - 200
-//        color: transparent
+        //        color: transparent
         anchors.centerIn: parent
-        visible: mediaplayer.playbackState == MediaPlayer.PausedState || mediaplayer.playbackState == MediaPlayer.StoppedState
+        visible: mediaplayer.playbackState == MediaPlayer.PausedState
+                 || mediaplayer.playbackState == MediaPlayer.StoppedState
 
         Column {
-        Image {
-            id: coverImage
-            height: coverTitle.height - 100
-            fillMode: Image.PreserveAspectFit
-            width: 500
-            source: coverUrl
-        }
-        Text {
-            id: firstTitle
-            width: 500
-            color: "#fff"
-            style: Text.Raised; styleColor: "#000"
-            text: mainTitle
-            horizontalAlignment: Text.AlignHCenter
-            font.pixelSize: 26
-            renderType: Text.NativeRendering
-        }
-        Text {
-            id: secondTitle
-            width: 500
-            color: "#fff"
-            style: Text.Raised; styleColor: "#000"
-            text: subTitle
-            horizontalAlignment: Text.AlignHCenter
-            font.pixelSize: 16
-            renderType: Text.NativeRendering
-        }
-
+            Image {
+                id: coverImage
+                height: coverTitle.height - 100
+                fillMode: Image.PreserveAspectFit
+                width: 500
+                source: coverUrl
+            }
+            Text {
+                id: firstTitle
+                width: 500
+                color: "#fff"
+                style: Text.Raised
+                styleColor: "#000"
+                text: mainTitle
+                horizontalAlignment: Text.AlignHCenter
+                font.pixelSize: 26
+                renderType: Text.NativeRendering
+            }
+            Text {
+                id: secondTitle
+                width: 500
+                color: "#fff"
+                style: Text.Raised
+                styleColor: "#000"
+                text: subTitle
+                horizontalAlignment: Text.AlignHCenter
+                font.pixelSize: 16
+                renderType: Text.NativeRendering
+            }
         }
     }
 
@@ -212,17 +253,18 @@ Rectangle {
 
     Rectangle {
         id: panel
-        height: 40
+        height: 60
         width: rec.width
         opacity: 0.7
 
         property bool show: true
-        property int expandedY: parent.height - 40
+        property int expandedY: parent.height - panel.height
         property int hiddenY: parent.height - 1
+        property bool enabledAnimation: true
 
         NumberAnimation on y {
             easing.type: Easing.OutCirc
-            running: !panel.show
+            running: !panel.show && panel.enabledAnimation
             duration: 500
             from: panel.expandedY
             to: panel.hiddenY
@@ -230,7 +272,7 @@ Rectangle {
 
         NumberAnimation on y {
             easing.type: Easing.OutElastic
-            running: panel.show
+            running: panel.show && panel.enabledAnimation
             duration: 500
             from: panel.hiddenY
             to: panel.expandedY
@@ -238,7 +280,7 @@ Rectangle {
 
         NumberAnimation on opacity {
             easing.type: Easing.OutElastic
-            running: !panel.show
+            running: !panel.show && panel.enabledAnimation
             duration: 1000
             from: 0.7
             to: 0.3
@@ -246,7 +288,7 @@ Rectangle {
 
         NumberAnimation on opacity {
             easing.type: Easing.OutElastic
-            running: panel.show
+            running: panel.show && panel.enabledAnimation
             duration: 1000
             from: 0.3
             to: 0.7
@@ -316,22 +358,142 @@ Rectangle {
             id: controls
             color: "#000"
             width: parent.width
-            height: 30
+            height: 50
 
             anchors {
                 bottom: parent.bottom
+
+            }
+            ////////////////////////////////////////////////////////////////////
+
+            Rectangle {
+                id: volumeRect
+                x: 50
+
+                height: 5
+                width: 100
+                anchors.verticalCenter: parent.verticalCenter
+                color: "#476495"
+                smooth: true
+                radius: 8
+
+
+                Rectangle {
+                    id: volumeBar
+                    radius: 8
+
+                    property int position: parseInt(mediaplayer.volume * 100)
+
+                    width: Math.floor(
+                               volumeRect.width * (volumeBar.position / 100 ))
+                    height: volumeRect.height
+                    anchors.bottom: volumeRect.bottom
+                    color: "#14d4f1"
+                    smooth: true
+
+                    Behavior on position {
+                        SmoothedAnimation {
+                            velocity: 500
+                            duration: 200
+                        }
+                    }
+                }
+
+                Rectangle {
+                    width: 5
+                    height: width
+                    color: "#ff9500"
+                    radius: 3
+                    anchors {
+                        bottom: undefined
+                        left: volumeBar.left
+                        right: undefined
+                        leftMargin: volumeBar.width - width / 2
+                        verticalCenter: parent.verticalCenter
+                    }
+                }
+
+                MouseArea {
+                    id: volumeMouseArea
+
+                    width: parent.width
+                    height: 10
+                    anchors.bottom: parent.bottom
+                    enabled: true
+                    onClicked: mediaplayer.volume = mouseX / 100
+                    onMouseXChanged: mediaplayer.volume = mouseX / 100
+                    onWheel: {
+                        wheel.angleDelta.y > 0 ? mediaplayer.volume += 0.1 : mediaplayer.volume -= 0.1
+                    }
+
+//                    onClicked: console.log((mouseX / 100))
+                }
+            }
+
+            ////////////////////////////////////////////////////////////////////
+
+            Item {
+                id: buttons
+                width: buttonsRow.width
+                height: 32
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+
+                Row {
+                    id: buttonsRow
+                    spacing: 20
+                    Button {
+                        id: prevButton
+                        imageSrc: "icons/backward.png"
+                        onClicked: videoPlayerItem.prev()
+                    }
+                    Button {
+                        id: playButton
+                        imageSrc:  videoPlayerItem.isPlaying ? "icons/pause.png" : "icons/play.png"
+                        onClicked: videoPlayerItem.playPauseVideo()
+                    }
+                    Button {
+                        id: nextButton
+                        imageSrc: "icons/forward.png"
+                        onClicked: videoPlayerItem.next()
+                    }
+                }
+            }
+
+            Item {
+                id: buttonsRight
+                width: buttonsRightRow.width
+                height: 32
+                anchors.right: parent.right
+                anchors.rightMargin: 20
+                anchors.verticalCenter: parent.verticalCenter
+
+                Row {
+                    id: buttonsRightRow
+                    spacing: 20
+                    Button {
+                        id: playlistButton
+                        imageSrc: "icons/list.png"
+                        onClicked: showPlaylist = !showPlaylist
+                    }
+                    Button {
+                        id: searchButton
+                        imageSrc: "icons/search.png"
+                        onClicked: videoPlayerItem.goSearch()
+                    }
+                }
             }
         }
-    }
 
-    Timer {
-        id: panelTimer
-        interval: 4000
-        running: false
-        repeat: false
-        onTriggered: {
-            if (panel.show)
-                panel.show = false
+        Timer {
+            id: panelTimer
+            interval: 4000
+            running: false
+            repeat: false
+            onTriggered: {
+                if (panel.show)
+                    panel.show = false
+            }
         }
     }
 }

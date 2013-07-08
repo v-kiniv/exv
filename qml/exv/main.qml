@@ -16,19 +16,6 @@ Rectangle {
 
 
 
-
-//    MouseArea {
-//        anchors.fill: parent
-//        onClicked: {
-
-//            //            exv.testSlot()
-//            //            Qt.quit();
-//            //            videoPlayerItem.playVideo()
-//            console.log("Looog")
-//        }
-//    }
-
-
     VideoView {
         enabled: false
         id: videoView

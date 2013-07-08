@@ -4,12 +4,34 @@ import QtGraphicalEffects 1.0
 
 Rectangle {
     id: playlistPanel
-    visible: showPlaylist
+//    visible: showPlaylist
     enabled: showPlaylist
     width: rec.width / 2
-    height: parent.height
+    x: -rec.width
+    height: parent.height+1
     color: "#5a5a57"
     opacity: 0.7
+    y: -1
+    border {
+        width: 1
+        color: "#5E7781"
+    }
+
+    NumberAnimation on x {
+        easing.type: Easing.InCurve
+        running: !showPlaylist
+        duration: 300
+        from: 0
+        to: -rec.width
+    }
+
+    NumberAnimation on x {
+        easing.type: Easing.OutCubic
+        running: showPlaylist
+        duration: 300
+        from: -playlistPanel.width-1
+        to: 0
+    }
 
     
     Component {
