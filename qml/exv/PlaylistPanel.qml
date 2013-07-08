@@ -17,6 +17,8 @@ Rectangle {
         color: "#5E7781"
     }
 
+    // function increase index
+
     NumberAnimation on x {
         easing.type: Easing.InCurve
         running: !showPlaylist

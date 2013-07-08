@@ -53,13 +53,19 @@ Rectangle {
         }
 
         function next() {
-            mediaplayer.source = playlistModel.getItem(++currentFileIndex).getUrl()
+            mediaplayer.stop()
+            mediaplayer.source = ""
+            currentFileIndex++
+            mediaplayer.source = playlistModel.getItem(currentFileIndex).getUrl()
             subTitle = playlistModel.getItem(currentFileIndex).getName()
             mediaplayer.play()
         }
 
         function prev() {
-            mediaplayer.source = playlistModel.getItem(--currentFileIndex).getUrl()
+            mediaplayer.stop()
+            mediaplayer.source = ""
+            currentFileIndex--
+            mediaplayer.source = playlistModel.getItem(currentFileIndex).getUrl()
             subTitle = playlistModel.getItem(currentFileIndex).getName()
             mediaplayer.play()
         }
@@ -137,9 +143,19 @@ Rectangle {
                 volumeBar.position = parseInt(mediaplayer.volume * 100)
             }
 
-            onStopped: {
-                videoPlayerItem.next()
+//            onStopped: {
+//                videoPlayerItem.next()
+//            }
+
+            onStatusChanged: {
+                if(mediaplayer.status == MediaPlayer.EndOfMedia)
+                    videoPlayerItem.next()
             }
+
+            onBufferProgressChanged: {
+                console.log("Buffer: "+bufferProgress)
+            }
+
         }
         VideoOutput {
             id: videoout
@@ -169,8 +185,11 @@ Rectangle {
 
             Keys.onUpPressed: {
                 console.log("Volume: " + mediaplayer.volume)
-                if (mediaplayer.volume < 1)
-                    mediaplayer.volume += 0.1
+                if(!showPlaylist)
+                    if (mediaplayer.volume < 1)
+                        mediaplayer.volume += 0.1
+//                else
+//                    pla
             }
 
             Keys.onDownPressed: {
@@ -183,9 +202,12 @@ Rectangle {
                 videoPlayerItem.goSearch()
             }
 
-            Keys.onEnterPressed: {
-                videoPlayerItem.toggleFullscreen()
-            }
+//            Keys.onEnterPressed: {
+//                videoPlayerItem.toggleFullscreen()
+//            }
+
+            Keys.onReturnPressed: videoPlayerItem.toggleFullscreen()
+
         }
     }
 
