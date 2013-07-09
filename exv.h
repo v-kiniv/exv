@@ -21,7 +21,6 @@ public:
 signals:
     
 public slots:
-    void testSlot();
     void toggleFullscreen();
     void searchVideo(QString);
     void getPlaylist(QString);

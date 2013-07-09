@@ -17,7 +17,23 @@ Rectangle {
         color: "#5E7781"
     }
 
-    // function increase index
+    function listUp () {
+        console.log("list up")
+        playlist.decrementCurrentIndex()
+    }
+
+    function listDown () {
+        console.log("list down")
+        playlist.incrementCurrentIndex()
+    }
+
+    function listSelect () {
+        console.log("list select")
+        currentFileIndex = playlist.currentIndex
+        videoPlayerItem.sourceChanged()
+        videoout.focus = true
+        showPlaylist = false
+    }
 
     NumberAnimation on x {
         easing.type: Easing.InCurve
@@ -40,7 +56,7 @@ Rectangle {
         id: highlightBar
         Rectangle {
             width: playlistPanel.width
-            height: 20
+            height: playlist.currentItem.height
             color: "#080809"
             y: playlist.currentItem.y
             Behavior on y {
@@ -57,15 +73,18 @@ Rectangle {
         id: delegate
         Item {
             id: wrapper
-            height: 20
+            height: listItem.height
             x: 5
             width: playlistPanel.width
             Text {
-                height: 5
+                id: listItem
+                width: parent.width - 10
                 color: "#b8dffd"
                 text: index+1 + ". " +name
                 font.pointSize: 12
                 renderType: Text.NativeRendering
+                wrapMode: Text.Wrap
+
             }
             
             states: State {
@@ -90,15 +109,7 @@ Rectangle {
                 }
                 
                 onClicked: {
-                    console.log("Start playing...")
-                    mediaplayer.source = url
-                    videoPlayerItem.playVideo()
-                    subTitle = name
-//                    showPlaylist = false
-                    videoout.focus = true
-//                    console.log(playlistModel.getItem(1).getUrl());
-                    currentFileIndex = index
-                    showPlaylist = false
+                    playlistPanel.listSelect()
                 }
                 
                 onDoubleClicked: {
@@ -115,8 +126,8 @@ Rectangle {
         focus: true
         highlight: highlightBar
         highlightFollowsCurrentItem: false
-        width: rec.width / 2
-        height: playlistPanel.height - 50
+        width: playlistPanel.width
+        height: playlistPanel.height - 80
 //        snapMode: ListView.SnapOneItem
         //        boundsBehavior: Flickable.StopAtBounds
         topMargin: 10

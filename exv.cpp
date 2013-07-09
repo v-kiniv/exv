@@ -11,15 +11,8 @@ Exv::Exv(QtQuick2ApplicationViewer *viewer, QObject *parent) :
     m_exua = new Exua();
     m_Viewer->rootContext()->setContextProperty("searchModel", m_exua->searchModel());
     m_Viewer->rootContext()->setContextProperty("playlistModel", m_exua->playlistModel());
-    m_exua->searchVideo("X-files");
-//    m_exua->getPlaylist("15228917");
+//    m_exua->searchVideo("X-files");
 
-}
-
-
-void Exv::testSlot()
-{
-    qDebug() << "Zalupa";
 }
 
 void Exv::toggleFullscreen()

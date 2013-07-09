@@ -53,21 +53,13 @@ Rectangle {
         }
 
         function next() {
-            mediaplayer.stop()
-            mediaplayer.source = ""
             currentFileIndex++
-            mediaplayer.source = playlistModel.getItem(currentFileIndex).getUrl()
-            subTitle = playlistModel.getItem(currentFileIndex).getName()
-            mediaplayer.play()
+            sourceChanged()
         }
 
         function prev() {
-            mediaplayer.stop()
-            mediaplayer.source = ""
             currentFileIndex--
-            mediaplayer.source = playlistModel.getItem(currentFileIndex).getUrl()
-            subTitle = playlistModel.getItem(currentFileIndex).getName()
-            mediaplayer.play()
+            sourceChanged()
         }
 
         function goSearch() {
@@ -88,6 +80,14 @@ Rectangle {
 //            panel.y = rec.height - panel.height
 //            panel.enabledAnimation = true
 //            panel.visible = true
+        }
+
+        function sourceChanged() {
+            mediaplayer.stop()
+            mediaplayer.source = ""
+            mediaplayer.source = playlistModel.getItem(currentFileIndex).getUrl()
+            subTitle = playlistModel.getItem(currentFileIndex).getName()
+            mediaplayer.play()
         }
 
         MouseArea {
@@ -123,18 +123,7 @@ Rectangle {
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   */
         MediaPlayer {
             id: mediaplayer
-            //                        source: "/home/yuberion/Изображения/Camera_2013_05/2013-04-10 19.02.02.mp4"
-            //            source: "/home/yuberion/Изображения/Camera_2013_05/2013-03-23 19.35.59.mp4"
-            //            source: "http://www.ex.ua/show/1174748/e6fbeed5e113ffc69b5ac7b82687d6cf.flv"
-            //            source: "/home/yuberion/e6fbeed5e113ffc69b5ac7b82687d6cf.flv"
-//            volume: 1.0
-
-            //            source: "http://www.ex.ua/get/27196651"
-
             onPositionChanged: {
-                //               if (mediaplayer.position > 1000) {
-                //                   seekBar.position = mediaplayer.position;
-                //               }
                 seekBar.position = mediaplayer.position
             }
 
@@ -143,20 +132,18 @@ Rectangle {
                 volumeBar.position = parseInt(mediaplayer.volume * 100)
             }
 
-//            onStopped: {
-//                videoPlayerItem.next()
-//            }
-
             onStatusChanged: {
                 if(mediaplayer.status == MediaPlayer.EndOfMedia)
                     videoPlayerItem.next()
             }
 
             onBufferProgressChanged: {
-                console.log("Buffer: "+bufferProgress)
+//                console.log("Buffer: "+bufferProgress)
+                befferBar.val = bufferProgress
             }
 
         }
+
         VideoOutput {
             id: videoout
             anchors.fill: parent
@@ -184,30 +171,48 @@ Rectangle {
             }
 
             Keys.onUpPressed: {
-                console.log("Volume: " + mediaplayer.volume)
-                if(!showPlaylist)
+                if(!showPlaylist) {
                     if (mediaplayer.volume < 1)
                         mediaplayer.volume += 0.1
-//                else
-//                    pla
+                } else {
+                    playlistPanel.listUp()
+                }
             }
 
             Keys.onDownPressed: {
-                console.log("Volume: " + mediaplayer.volume)
-                if (mediaplayer.volume > 0)
-                    mediaplayer.volume -= 0.1
+                if(!showPlaylist) {
+                    if (mediaplayer.volume > 0)
+                        mediaplayer.volume -= 0.1
+                } else {
+                    playlistPanel.listDown()
+                }
             }
 
             Keys.onEscapePressed: {
                 videoPlayerItem.goSearch()
             }
 
-//            Keys.onEnterPressed: {
-//                videoPlayerItem.toggleFullscreen()
-//            }
+            Keys.onReturnPressed: {
+                 if(!showPlaylist)
+                    videoPlayerItem.toggleFullscreen()
+                 else
+                    playlistPanel.listSelect()
 
-            Keys.onReturnPressed: videoPlayerItem.toggleFullscreen()
+            }
 
+        }
+
+        Rectangle {
+            id: befferBar
+            anchors.horizontalCenter: parent.horizontalCenter
+            y: 50
+            visible: befferBar.val < 1
+            property double val: 1
+            Text {
+                id: bufferingText
+                color: "#FFBF00"
+                text: "Buffering: <b>" + parseInt(befferBar.val * 100) + "</b>%"
+            }
         }
     }
 
@@ -229,7 +234,7 @@ Rectangle {
 
     Item {
         id: coverTitle
-        width: 500
+        width: parent.width
         height: rec.height - 200
         //        color: transparent
         anchors.centerIn: parent
@@ -241,12 +246,13 @@ Rectangle {
                 id: coverImage
                 height: coverTitle.height - 100
                 fillMode: Image.PreserveAspectFit
-                width: 500
+                width: coverTitle.width
                 source: coverUrl
+                anchors.leftMargin: coverTitle.width - 250
             }
             Text {
                 id: firstTitle
-                width: 500
+                width: coverTitle.width
                 color: "#fff"
                 style: Text.Raised
                 styleColor: "#000"
@@ -254,10 +260,11 @@ Rectangle {
                 horizontalAlignment: Text.AlignHCenter
                 font.pixelSize: 26
                 renderType: Text.NativeRendering
+                wrapMode: Text.Wrap
             }
             Text {
                 id: secondTitle
-                width: 500
+                width: coverTitle.width
                 color: "#fff"
                 style: Text.Raised
                 styleColor: "#000"
