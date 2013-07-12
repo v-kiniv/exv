@@ -14,6 +14,19 @@ Rectangle {
         searchList.focus = true
     }
 
+    function itemSeleced() {
+        exv.getPlaylist(searchModel.getItem(searchList.currentIndex).exid())
+        mainTitle = searchModel.getItem(searchList.currentIndex).name()
+        coverUrl = searchModel.getItem(searchList.currentIndex).image()
+        videoView.visible = true
+        videoView.enabled = true
+        showPlaylist = true
+        searchPanel.visible = false
+        searchPanel.enabled = false
+        videoView.focusOnPlayer()
+
+    }
+
     // Search ListView
     Component {
            id: highlightBar
@@ -71,6 +84,9 @@ Rectangle {
                     duration: 200
                 }
             }
+            Keys.onReturnPressed: {
+                searchPanel.itemSeleced()
+            }
             MouseArea {
                 anchors.fill: parent
                 hoverEnabled: true
@@ -79,20 +95,7 @@ Rectangle {
                 }
 
                 onClicked: {
-                    console.log("Index"+index+"; Exid: "+exid)
-                    exv.getPlaylist(exid)
-                    videoView.visible = true
-                    videoView.enabled = true
-                    searchPanel.visible = false
-                    searchPanel.enabled = false
-                    mainTitle = name
-                    coverUrl = image
-                    showPlaylist = true
-                }
-
-                onDoubleClicked: {
-                    console.log("DDDDDDDDd")
-//                    searchList.re
+                    searchPanel.itemSeleced()
                 }
             }
         }
@@ -153,11 +156,5 @@ Rectangle {
                 }
             }
         }
-        
-        
-        
-        
     }
-    
-    
 }

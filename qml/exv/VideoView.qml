@@ -15,6 +15,10 @@ Rectangle {
         panel.enabledAnimation = true
     }
 
+    function focusOnPlayer() {
+        videoout.forceActiveFocus()
+    }
+
     Item {
         //        visible: false;
         id: videoPlayerItem

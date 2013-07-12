@@ -20,11 +20,11 @@ public:
   QHash<int, QByteArray> roleNames() const;
   void setName(QString name);
   inline QString id() const { return m_name; }
-  inline QString name() const { return m_name; }
-  inline QString desc() const { return m_desc; }
-  inline int filesCount() const { return m_filesCount; }
-  inline QString exid() const { return m_exid; }
-  inline QString image() const { return m_image; }
+  Q_INVOKABLE inline QString name() const { return m_name; }
+  Q_INVOKABLE inline QString desc() const { return m_desc; }
+  Q_INVOKABLE inline int filesCount() const { return m_filesCount; }
+  Q_INVOKABLE inline QString exid() const { return m_exid; }
+  Q_INVOKABLE inline QString image() const { return m_image; }
 
 private:
   QString m_name;
