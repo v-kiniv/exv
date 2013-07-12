@@ -88,8 +88,6 @@ Rectangle {
                     mainTitle = name
                     coverUrl = image
                     showPlaylist = true
-
-
                 }
 
                 onDoubleClicked: {
@@ -103,17 +101,13 @@ Rectangle {
     ListView {
         id: searchList
         keyNavigationWraps: true
-        focus: true
         highlight: highlightBar
         highlightFollowsCurrentItem: false
         width: rec.width
         height: searchPanel.height - 50
-//        boundsBehavior: Flickable.StopAtBounds
         topMargin: 50
-        
         model: searchModel
         delegate: delegate
-        //                anchors.bottom: parent.bottom
         
         Rectangle {
             id: rectangle1
@@ -127,23 +121,30 @@ Rectangle {
             anchors.rightMargin: 20
             anchors.left: parent.left
             anchors.leftMargin: 20
-            TextInput {
-                id: searchInput
-                color: "#f9f8f8"
-                text: qsTr("Search...")
-                cursorVisible: false
+            Text {
+                id: name
+                text: searchInput.text == '' ? 'Search...' : '';
+                color: "#222"
                 anchors.leftMargin: 9
                 anchors.topMargin: 7
                 anchors.fill: parent
-                font.pointSize: 14
+                font.pixelSize: 14
+                renderType: Text.NativeRendering
+            }
+            TextInput {
+                id: searchInput
+                color: "#f9f8f8"
+                Component.onCompleted: searchInput.forceActiveFocus()
+                cursorVisible: true
+                anchors.leftMargin: 9
+                anchors.topMargin: 7
+                anchors.fill: parent
                 horizontalAlignment: TextInput.AlignLeft
                 selectionColor: "#8fd1ff"
                 font.pixelSize: 14
                 renderType: Text.NativeRendering
-                onFocusChanged: {
-                    if(searchInput.text == "Search...")
-                        searchInput.text = ""
-                }
+                focus: true
+
                 onAccepted: {
                     console.log("SEARCH")
                     

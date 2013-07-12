@@ -23,6 +23,7 @@ Rectangle {
 
     SearchPanel {
         visible: true
+        focus: true
         id: searchPanel
     }
 

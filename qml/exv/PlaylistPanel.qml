@@ -73,17 +73,19 @@ Rectangle {
         id: delegate
         Item {
             id: wrapper
-            height: listItem.height
+            height: listItem.height * 2
             x: 5
             width: playlistPanel.width
             Text {
                 id: listItem
+                anchors.verticalCenter: parent.verticalCenter
                 width: parent.width - 10
                 color: "#b8dffd"
                 text: index+1 + ". " +name
                 font.pointSize: 12
                 renderType: Text.NativeRendering
                 wrapMode: Text.Wrap
+
 
             }
             
