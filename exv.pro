@@ -20,14 +20,16 @@ HEADERS += exv.h \
            exua.h \
            listmodel.h \
     vitem.h \
-    pitem.h
+    pitem.h \
+    parser.h
 
 SOURCES += main.cpp \
            exv.cpp \
            exua.cpp \
            listmodel.cpp \
     vitem.cpp \
-    pitem.cpp
+    pitem.cpp \
+    parser.cpp
 
 
 

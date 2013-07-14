@@ -1,6 +1,4 @@
 #include "exv.h"
-#include "vitem.h"
-#include "pitem.h"
 
 #include <QDebug>
 #include <QQmlContext>
@@ -22,6 +20,8 @@ Exv::Exv(QtQuick2ApplicationViewer *viewer, QObject *parent) :
     m_exua->setPlaylistModel(m_playlistModel);
 //    m_exua->searchVideo("X-files");
 
+    connect(m_exua, SIGNAL(searchComleted()), SLOT(onSearchCompleted()));
+
     load();
 
 }
@@ -37,7 +37,7 @@ void Exv::load()
     if(searchFile.exists()) {
         searchFile.open(QFile::ReadOnly);
         QDataStream out(&searchFile);
-        int size, filesCount;
+        int size;
         out >> size;
 
         for (int i = 0; i < size; ++i) {
@@ -45,6 +45,8 @@ void Exv::load()
             item->read(out);
             m_searchModel->appendRow(item);
         }
+
+        searchFile.close();
     }
 }
 
@@ -60,6 +62,13 @@ void Exv::save()
          VItem *item = (VItem*)m_searchModel->getItem(i);
          item->write(in);
     }
+    searchFile.close();
+}
+
+void Exv::onSearchCompleted()
+{
+    qDebug() << "EXV search completed";
+//    Parser *p = static_cast<Parser*>(sender());
 }
 
 void Exv::toggleFullscreen()

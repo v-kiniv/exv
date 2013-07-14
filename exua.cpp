@@ -1,6 +1,4 @@
 #include "exua.h"
-#include "vitem.h"
-#include "pitem.h"
 
 #include <QDebug>
 #include <QUrl>
@@ -12,41 +10,31 @@
 #include <QJsonObject>
 
 Exua::Exua(QObject *parent) :
-    QObject(parent)
+    Parser(parent)
 {
-    m_nManager = new QNetworkAccessManager();
-    m_nRequest.setRawHeader("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.874.121 Safari/535.2");
+
 }
 
 void Exua::searchVideo(QString str)
 {
-    qDebug() << "Start";
+    qDebug() << "Start search request.";
     QUrl url(QString("http://www.ex.ua/search?s=%0").arg(str));
-
-    m_nRequest.setUrl(url);
-
-    m_nManager->disconnect();
-    connect(m_nManager, SIGNAL(finished(QNetworkReply*)), SLOT(searchReply(QNetworkReply*)));
-    m_nManager->get(m_nRequest);
+    connect(this, SIGNAL(requestCompleted(QByteArray)), SLOT(searchReply(QByteArray)));
+    request(url);
 }
 
 void Exua::getPlaylist(QString exid)
 {
-    qDebug() << "Start";
+    qDebug() << "Start playlist request.";
     QUrl url(QString("http://www.ex.ua/view/%0").arg(exid));
-
-    m_nRequest.setUrl(url);
-
-    m_nManager->disconnect();
-    connect(m_nManager, SIGNAL(finished(QNetworkReply*)), SLOT(playlistReply(QNetworkReply*)));
-    m_nManager->get(m_nRequest);
+    connect(this, SIGNAL(requestCompleted(QByteArray)), SLOT(playlistReply(QByteArray)));
+    request(url);
 }
 
-void Exua::searchReply(QNetworkReply *reply)
+void Exua::searchReply(QByteArray data)
 {
-    qDebug() << "End";
-    QString content = reply->readAll();
-//    qDebug() << content;
+    qDebug() << "Search request completed.";
+    QString content = data;
 
     QRegExp rxTable("<table width=100% border=0 cellpadding=0 cellspacing=8 class=panel>(.*)</table>");
     rxTable.setMinimal(true);
@@ -55,8 +43,6 @@ void Exua::searchReply(QNetworkReply *reply)
 
     m_searchModel->clear();
 
-
-//    QRegExp rxTd("<td>(.*)</td>");
     QRegExp rxTd("<tr><td><a href='/view/([\\d]*)'><img src='(.*)\\?[\\d]+' width='[\\d]+' height='[\\d]+' border='0' align='left' style='.*' alt='.*'></a><a href='/view/[\\d]+'><b>(.*)</b></a><br><a href='/user/.*'>.*</a>.*<p>(.*)<p><a href='/view_comments/\\1' class=info>.*</a><p><small>Файлов: ([\\d]*).*</small></td></tr>");
     rxTd.setMinimal(true);
 
@@ -75,15 +61,15 @@ void Exua::searchReply(QNetworkReply *reply)
             pos += rxTd.matchedLength();
         }
     }
-//    qDebug() << m_searchModel->rowCount()
-
+    emit searchComleted();
+    disconnect(this, SIGNAL(requestCompleted(QByteArray)), this, SLOT(searchReply(QByteArray)));
 }
 
 
-void Exua::playlistReply(QNetworkReply *reply)
+void Exua::playlistReply(QByteArray data)
 {
-    qDebug() << "End";
-    QString content = reply->readAll();
+    qDebug() << "Playlist request completed.";
+    QString content = data;
 
     m_playlistModel->clear();
 //    qDebug() << content;
@@ -108,9 +94,6 @@ void Exua::playlistReply(QNetworkReply *reply)
         m_playlistModel->appendRow(new PItem(name, url));
         i++;
     }
-
-//    qDebug() << jdoc.isArray();
-//    qDebug() << jdoc.isObject();
-
-
+    emit playlistReady();
+    disconnect(this, SIGNAL(requestCompleted(QByteArray)), this, SLOT(playlistReply(QByteArray)));
 }

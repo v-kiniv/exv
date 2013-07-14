@@ -127,7 +127,7 @@ Rectangle {
             Text {
                 id: name
                 text: searchInput.text == '' ? 'Search...' : '';
-                color: "#222"
+                color: "#B5B5B5"
                 anchors.leftMargin: 9
                 anchors.topMargin: 7
                 anchors.fill: parent

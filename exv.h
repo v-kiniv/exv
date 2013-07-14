@@ -27,6 +27,9 @@ public:
     
 signals:
     
+private slots:
+    void onSearchCompleted();
+
 public slots:
     void toggleFullscreen();
     void searchVideo(QString);
