@@ -25,6 +25,8 @@ public:
     void searchVideo(QString str);
     void getPlaylist(QString exid);
 
+    void setSearchModel(ListModel *model) { m_searchModel = model; }
+    void setPlaylistModel(ListModel *model) { m_playlistModel = model; }
     ListModel* searchModel() { return m_searchModel; }
     ListModel* playlistModel() { return m_playlistModel; }
     

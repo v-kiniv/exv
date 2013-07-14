@@ -64,7 +64,7 @@ Rectangle {
                     Text {
                         height: 100
                         color: "#f9f4f4"
-                        text: desc
+                        text: desc+"<br><b>"+filesCount+"</b> files"
                         renderType: Text.NativeRendering
                     }
                 }

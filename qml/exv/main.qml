@@ -14,8 +14,6 @@ Rectangle {
     property bool showPlaylist: false
     property int currentFileIndex: 0
 
-
-
     VideoView {
         enabled: false
         id: videoView
@@ -26,9 +24,4 @@ Rectangle {
         focus: true
         id: searchPanel
     }
-
-
-
-
-
 }

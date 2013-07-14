@@ -13,9 +13,16 @@ private:
     QtQuick2ApplicationViewer *m_Viewer;
     bool m_bFullScreen;
     Exua *m_exua;
+    QString m_sAppPath;
+    ListModel *m_searchModel;
+    ListModel *m_playlistModel;
+
+    void load();
+    void save();
 
 public:
     explicit Exv(QtQuick2ApplicationViewer *viewer, QObject *parent = 0);
+    ~Exv();
     void setViewer(QtQuick2ApplicationViewer* v) { m_Viewer = v; }
     
 signals:

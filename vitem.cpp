@@ -2,7 +2,7 @@
 
 VItem::VItem(const QString &name,
              const QString &desc,
-             const int &filesCount,
+             const QString &filesCount,
              const QString &exid,
              const QString &image,
              QObject *parent) :
@@ -21,6 +21,24 @@ void VItem::setName(QString name)
     m_name = name;
     emit dataChanged();
   }
+}
+
+void VItem::write(QDataStream &stream)
+{
+    stream << name();
+    stream << desc();
+    stream << filesCount();
+    stream << exid();
+    stream << image();
+}
+
+void VItem::read(QDataStream &stream)
+{
+    stream >> m_name;
+    stream >> m_desc;
+    stream >> m_filesCount;
+    stream >> m_exid;
+    stream >> m_image;
 }
 
 QHash<int, QByteArray> VItem::roleNames() const

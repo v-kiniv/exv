@@ -16,11 +16,6 @@ Exua::Exua(QObject *parent) :
 {
     m_nManager = new QNetworkAccessManager();
     m_nRequest.setRawHeader("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.874.121 Safari/535.2");
-
-    m_searchModel = new ListModel(new VItem, this);
-    m_playlistModel = new ListModel(new PItem, this);
-
-     qDebug() << m_searchModel->roleNames();
 }
 
 void Exua::searchVideo(QString str)
@@ -74,7 +69,7 @@ void Exua::searchReply(QNetworkReply *reply)
             QString image = rxTd.capturedTexts()[2];
             QString name = rxTd.capturedTexts()[3];
             QString desc = rxTd.capturedTexts()[4];
-            int filesCount = rxTd.capturedTexts()[5].toInt();
+            QString filesCount = rxTd.capturedTexts()[5];
             if(exid != "")
                 m_searchModel->appendRow(new VItem(name, desc, filesCount, exid, image));
             pos += rxTd.matchedLength();
