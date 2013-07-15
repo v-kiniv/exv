@@ -45,14 +45,13 @@ Rectangle {
         }
 
         function playPauseVideo() {
-
-            //                        mediaplayer.volume = 1.0
+//            console.log('pos: '+mediaplayer.position);
+//            console.log('total: '+mediaplayer.duration);
+//            console.log('delta: ' + parseInt(mediaplayer.duration - mediaplayer.position));
             if (mediaplayer.playbackState == MediaPlayer.PlayingState) {
                 mediaplayer.pause()
-                //                panel.show = true
             } else {
                 mediaplayer.play()
-                //                panel.show = false
             }
         }
 
@@ -77,13 +76,7 @@ Rectangle {
         }
 
         function toggleFullscreen() {
-            console.log("Full")
             exv.toggleFullscreen()
-//            panel.visible = false
-//            panel.enabledAnimation = false
-//            panel.y = rec.height - panel.height
-//            panel.enabledAnimation = true
-//            panel.visible = true
         }
 
         function sourceChanged() {
@@ -137,8 +130,17 @@ Rectangle {
             }
 
             onStatusChanged: {
-                if(mediaplayer.status == MediaPlayer.EndOfMedia)
-                    videoPlayerItem.next()
+                if(mediaplayer.status == MediaPlayer.EndOfMedia) {
+                    var pos = mediaplayer.position
+                    if((mediaplayer.duration - pos) > 500) {
+                        console.log("Unexpected END OF MEDIA!");
+                        mediaplayer.stop();
+                        mediaplayer.seek(pos);
+                        mediaplayer.play();
+                    } else {
+                        videoPlayerItem.next()
+                    }
+                }
             }
 
             onBufferProgressChanged: {
@@ -154,11 +156,9 @@ Rectangle {
             source: mediaplayer
             fillMode: VideoOutput.PreserveAspectFit
             focus: true
-            Keys.onSpacePressed: mediaplayer.playbackState
-                                 == MediaPlayer.PlayingState ? mediaplayer.pause(
-                                                                   ) : mediaplayer.play()
-            Keys.onLeftPressed: mediaplayer.seek(mediaplayer.position - 5000)
-            Keys.onRightPressed: mediaplayer.seek(mediaplayer.position + 5000)
+            Keys.onSpacePressed: videoPlayerItem.playPauseVideo()
+            Keys.onLeftPressed: mediaplayer.seek(mediaplayer.position - 10000)
+            Keys.onRightPressed: mediaplayer.seek(mediaplayer.position + 10000)
 
             Keys.onDigit1Pressed: {
                 videoout.fillMode = VideoOutput.PreserveAspectFit
