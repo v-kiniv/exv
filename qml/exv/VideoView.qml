@@ -135,8 +135,8 @@ Rectangle {
                     if((mediaplayer.duration - pos) > 500) {
                         console.log("Unexpected END OF MEDIA!");
                         mediaplayer.stop();
-                        mediaplayer.seek(pos);
                         mediaplayer.play();
+                        mediaplayer.seek(pos);
                     } else {
                         videoPlayerItem.next()
                     }
