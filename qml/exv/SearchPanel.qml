@@ -126,6 +126,7 @@ Rectangle {
                     text: "Search"
                     color: "#fff"
                     font.pixelSize: 24
+                    renderType: Text.NativeRendering
                 }
             }
 
@@ -151,6 +152,7 @@ Rectangle {
                     text: "Bookmarks"
                     color: "#fff"
                     font.pixelSize: 24
+                    renderType: Text.NativeRendering
                 }
             }
             MouseArea {

@@ -306,7 +306,7 @@ Rectangle {
         color: "transparent"
 
         property bool show: true
-        property int hiddenMargin: 5
+        property int hiddenMargin: 3
         property int expandedY: parent.height - panel.height
         property int hiddenY: parent.height - panel.hiddenMargin
         property bool enabledAnimation: true
