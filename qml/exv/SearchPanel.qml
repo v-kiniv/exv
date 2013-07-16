@@ -96,12 +96,16 @@ Rectangle {
             MouseArea {
                 anchors.fill: parent
                 hoverEnabled: true
+                acceptedButtons: Qt.LeftButton | Qt.RightButton
                 onPositionChanged: {
                     searchList.currentIndex = index
                 }
 
                 onClicked: {
-                    searchPanel.itemSeleced()
+                    if (mouse.button == Qt.RightButton)
+                        showSearch ? exv.addToFav(exid) : exv.delFromFav(exid)
+                    if (mouse.button == Qt.LeftButton)
+                        searchPanel.itemSeleced()
                 }
             }
         }

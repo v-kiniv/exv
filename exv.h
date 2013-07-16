@@ -27,6 +27,7 @@ public:
     void setViewer(QtQuick2ApplicationViewer* v) { m_Viewer = v; }
 
     Q_INVOKABLE bool addToFav(QString id);
+    Q_INVOKABLE void delFromFav(QString id);
     
 signals:
     

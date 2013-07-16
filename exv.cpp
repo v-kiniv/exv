@@ -38,6 +38,13 @@ bool Exv::addToFav(QString id)
     }
 }
 
+void Exv::delFromFav(QString id)
+{
+    if(m_favModel->find(id) != 0) {
+        m_favModel->removeRow(m_favModel->indexFromItem(m_favModel->find(id)).row());
+    }
+}
+
 void Exv::load()
 {
     m_sAppPath = QDir::homePath() + "/.config/exv";
