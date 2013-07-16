@@ -10,7 +10,7 @@ Rectangle {
     onHeightChanged: {
         panel.enabledAnimation = false
         panel.expandedY = rec.height - panel.height
-        panel.hiddenY = rec.height - 1
+        panel.hiddenY = rec.height - panel.hiddenMargin
         panel.y = rec.height - panel.height
         panel.enabledAnimation = true
     }
@@ -53,6 +53,14 @@ Rectangle {
             } else {
                 mediaplayer.play()
             }
+        }
+
+        function volUp() {
+            mediaplayer.volume = mediaplayer.volume > 0.90 ? 1 : mediaplayer.volume + 0.1
+        }
+
+        function volDown() {
+            mediaplayer.volume = mediaplayer.volume < 0.1 ? 0 : mediaplayer.volume - 0.1
         }
 
         function next() {
@@ -176,8 +184,7 @@ Rectangle {
 
             Keys.onUpPressed: {
                 if(!showPlaylist) {
-                    if (mediaplayer.volume < 1)
-                        mediaplayer.volume += 0.1
+                    videoPlayerItem.volUp()
                 } else {
                     playlistPanel.listUp()
                 }
@@ -185,8 +192,7 @@ Rectangle {
 
             Keys.onDownPressed: {
                 if(!showPlaylist) {
-                    if (mediaplayer.volume > 0)
-                        mediaplayer.volume -= 0.1
+                    videoPlayerItem.volDown()
                 } else {
                     playlistPanel.listDown()
                 }
@@ -289,10 +295,12 @@ Rectangle {
         height: 60
         width: rec.width
         opacity: 0.7
+        color: "transparent"
 
         property bool show: true
+        property int hiddenMargin: 5
         property int expandedY: parent.height - panel.height
-        property int hiddenY: parent.height - 1
+        property int hiddenY: parent.height - panel.hiddenMargin
         property bool enabledAnimation: true
 
         NumberAnimation on y {
@@ -338,20 +346,19 @@ Rectangle {
             anchors {
                 top: parent.top
             }
-            color: "#476495"
+            color: videoPlayerItem.isPlaying && !panel.show ? "transparent" : "#476495"
             smooth: true
 
             Rectangle {
                 id: seekBar
-
-                property int position: 0
-
                 width: Math.floor(
                            seekRect.width * (seekBar.position / mediaplayer.duration))
                 height: seekRect.height
                 anchors.bottom: seekRect.bottom
-                color: "#14d4f1"
+                color: videoPlayerItem.isPlaying && !panel.show ? "transparent" :  "#6BBAD3"
                 smooth: true
+
+                property int position: 0
 
                 Behavior on position {
                     SmoothedAnimation {
@@ -449,17 +456,17 @@ Rectangle {
                 MouseArea {
                     id: volumeMouseArea
 
+                    property double val: mouseX >= 0 && mouseX <= parent.width ? 1 / (parent.width / mouseX) : volumeMouseArea.val
+
                     width: parent.width
                     height: 10
                     anchors.bottom: parent.bottom
                     enabled: true
-                    onClicked: mediaplayer.volume = mouseX / 100
-                    onMouseXChanged: mediaplayer.volume = mouseX / 100
+                    onClicked: mediaplayer.volume = val
+                    onMouseXChanged: mediaplayer.volume = val
                     onWheel: {
                         wheel.angleDelta.y > 0 ? mediaplayer.volume += 0.1 : mediaplayer.volume -= 0.1
                     }
-
-//                    onClicked: console.log((mouseX / 100))
                 }
             }
 

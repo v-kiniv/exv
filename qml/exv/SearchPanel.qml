@@ -24,6 +24,7 @@ Rectangle {
         searchPanel.visible = false
         searchPanel.enabled = false
         videoView.focusOnPlayer()
+        exv.setTitle(mainTitle)
 
     }
 

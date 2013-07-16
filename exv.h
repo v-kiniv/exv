@@ -34,6 +34,7 @@ public slots:
     void toggleFullscreen();
     void searchVideo(QString);
     void getPlaylist(QString);
+    void setTitle(QString str) { m_Viewer->setTitle(str); }
     
 };
 
