@@ -103,6 +103,22 @@ Rectangle {
                 console.log("Already in fav")
         }
 
+        function getTime(val) {
+            var seconds = val / 1000
+            var h = Math.floor(seconds / 3600)
+            var m = Math.floor(seconds / 60) - h*60
+            var s = Math.floor(seconds) - h*60*60  - m*60
+            var out = ""
+            if(h > 0) {
+                out += h < 10 ? "0"+h : h
+                out += ":"
+            }
+            out += m < 10 ? "0"+m : m
+            out += ":"
+            out += s < 10 ? "0"+s : s
+            return out
+        }
+
         MouseArea {
             hoverEnabled: true
             anchors.fill: parent
@@ -300,7 +316,7 @@ Rectangle {
 
     Rectangle {
         id: panel
-        height: 60
+        height: 70
         width: rec.width
         opacity: 0.7
         color: "transparent"
@@ -406,13 +422,26 @@ Rectangle {
             id: controls
             color: "#000"
             width: parent.width
-            height: 50
+            height: 60
 
             anchors {
                 bottom: parent.bottom
 
             }
             ////////////////////////////////////////////////////////////////////
+
+            Text {
+                text: videoPlayerItem.getTime(mediaplayer.position)
+                color: "#fff"
+                font.pixelSize: 10
+            }
+
+            Text {
+                text: videoPlayerItem.getTime(mediaplayer.duration)
+                color: "#fff"
+                anchors.right: parent.right
+                font.pixelSize: 10
+            }
 
             Rectangle {
                 id: volumeRect
