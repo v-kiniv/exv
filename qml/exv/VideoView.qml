@@ -95,6 +95,14 @@ Rectangle {
             mediaplayer.play()
         }
 
+        function addToFav() {
+//            console.log("Try to add: " + currentId)
+            if(exv.addToFav(currentId))
+                console.log("Added to fav")
+            else
+                console.log("Already in fav")
+        }
+
         MouseArea {
             hoverEnabled: true
             anchors.fill: parent
@@ -512,14 +520,19 @@ Rectangle {
                     id: buttonsRightRow
                     spacing: 20
                     Button {
-                        id: playlistButton
-                        imageSrc: "icons/list.png"
-                        onClicked: showPlaylist = !showPlaylist
+                        id: toFavButton
+                        imageSrc: "icons/bookmark.png"
+                        onClicked: videoPlayerItem.addToFav()
                     }
                     Button {
                         id: searchButton
-                        imageSrc: "icons/search.png"
+                        imageSrc: "icons/cat.png"
                         onClicked: videoPlayerItem.goSearch()
+                    }
+                    Button {
+                        id: playlistButton
+                        imageSrc: "icons/list.png"
+                        onClicked: showPlaylist = !showPlaylist
                     }
                 }
             }

@@ -19,7 +19,7 @@ public:
   QVariant data(int role) const;
   QHash<int, QByteArray> roleNames() const;
   void setName(QString name);
-  inline QString id() const { return m_name; }
+  inline QString id() const { return m_exid; }
   Q_INVOKABLE inline QString name() const { return m_name; }
   Q_INVOKABLE inline QString desc() const { return m_desc; }
   Q_INVOKABLE inline QString filesCount() const { return m_filesCount; }
@@ -27,6 +27,7 @@ public:
   Q_INVOKABLE inline QString image() const { return m_image; }
   void write(QDataStream &stream);
   void read(QDataStream &stream);
+  VItem *copy();
 
 private:
   QString m_name;

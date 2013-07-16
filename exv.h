@@ -15,6 +15,7 @@ private:
     Exua *m_exua;
     QString m_sAppPath;
     ListModel *m_searchModel;
+    ListModel *m_favModel;
     ListModel *m_playlistModel;
 
     void load();
@@ -24,6 +25,8 @@ public:
     explicit Exv(QtQuick2ApplicationViewer *viewer, QObject *parent = 0);
     ~Exv();
     void setViewer(QtQuick2ApplicationViewer* v) { m_Viewer = v; }
+
+    Q_INVOKABLE bool addToFav(QString id);
     
 signals:
     

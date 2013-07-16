@@ -7,5 +7,8 @@
         <file>icons/stop.png</file>
         <file>icons/list.png</file>
         <file>icons/search.png</file>
+        <file>icons/bookmarks.png</file>
+        <file>icons/bookmark.png</file>
+        <file>icons/cat.png</file>
     </qresource>
 </RCC>

@@ -11,10 +11,12 @@ Exv::Exv(QtQuick2ApplicationViewer *viewer, QObject *parent) :
     m_bFullScreen = false;
 
     m_searchModel = new ListModel(new VItem, this);
+    m_favModel = new ListModel(new VItem, this);
     m_playlistModel = new ListModel(new PItem, this);
 
     m_exua = new Exua();
     m_Viewer->rootContext()->setContextProperty("searchModel", m_searchModel);
+    m_Viewer->rootContext()->setContextProperty("favModel", m_favModel);
     m_Viewer->rootContext()->setContextProperty("playlistModel", m_playlistModel);
     m_exua->setSearchModel(m_searchModel);
     m_exua->setPlaylistModel(m_playlistModel);
@@ -24,6 +26,16 @@ Exv::Exv(QtQuick2ApplicationViewer *viewer, QObject *parent) :
 
     load();
 
+}
+
+bool Exv::addToFav(QString id)
+{
+    if(m_favModel->find(id) == 0) {
+        m_favModel->appendRow(static_cast<VItem*>(m_searchModel->find(id))->copy());
+        return true;
+    } else {
+        return false;
+    }
 }
 
 void Exv::load()
@@ -39,11 +51,17 @@ void Exv::load()
         QDataStream out(&searchFile);
         int size;
         out >> size;
-
         for (int i = 0; i < size; ++i) {
             VItem *item = new VItem(m_searchModel);
             item->read(out);
             m_searchModel->appendRow(item);
+        }
+
+        out >> size;
+        for (int i = 0; i < size; ++i) {
+            VItem *item = new VItem(m_favModel);
+            item->read(out);
+            m_favModel->appendRow(item);
         }
 
         searchFile.close();
@@ -55,11 +73,18 @@ void Exv::save()
     QFile searchFile(m_sAppPath+"/search.dat");
     searchFile.open(QFile::WriteOnly);
     QDataStream in(&searchFile);
+
     int size = m_searchModel->rowCount();
     in << size;
-
     for (int i = 0; i < size; ++i) {
          VItem *item = (VItem*)m_searchModel->getItem(i);
+         item->write(in);
+    }
+
+    size = m_favModel->rowCount();
+    in << size;
+    for (int i = 0; i < size; ++i) {
+         VItem *item = (VItem*)m_favModel->getItem(i);
          item->write(in);
     }
     searchFile.close();
@@ -68,6 +93,7 @@ void Exv::save()
 void Exv::onSearchCompleted()
 {
     qDebug() << "EXV search completed";
+//    m_favModel->appendRow(static_cast<VItem*>(m_searchModel->getItem(0))->copy());
 //    Parser *p = static_cast<Parser*>(sender());
 }
 

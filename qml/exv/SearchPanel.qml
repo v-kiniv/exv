@@ -9,15 +9,17 @@ Rectangle {
     color: "#414242"
     anchors.fill: parent
 
+    property bool showSearch: true
+
     function focus2List() {
         searchInput.focus = false
         searchList.focus = true
     }
 
     function itemSeleced() {
-        exv.getPlaylist(searchModel.getItem(searchList.currentIndex).exid())
-        mainTitle = searchModel.getItem(searchList.currentIndex).name()
-        coverUrl = searchModel.getItem(searchList.currentIndex).image()
+        exv.getPlaylist(searchList.model.getItem(searchList.currentIndex).exid())
+        mainTitle = searchList.model.getItem(searchList.currentIndex).name()
+        coverUrl = searchList.model.getItem(searchList.currentIndex).image()
         videoView.visible = true
         videoView.enabled = true
         showPlaylist = true
@@ -25,6 +27,8 @@ Rectangle {
         searchPanel.enabled = false
         videoView.focusOnPlayer()
         exv.setTitle(mainTitle)
+        currentId = searchList.model.getItem(searchList.currentIndex).exid()
+        currentFileIndex: -1
 
     }
 
@@ -45,6 +49,7 @@ Rectangle {
             id: wrapper
             height: 150
             x: 20
+
             width: searchPanel.width
             Column {
                 spacing: 10
@@ -101,6 +106,59 @@ Rectangle {
             }
         }
     }
+
+    Column {
+    Row {
+        spacing: 2
+        Rectangle {
+            height: 40
+            width: searchPanel.width / 2
+            color: "black"
+            z: 1
+            opacity: !searchPanel.showSearch ? 0.5 : 1
+            Row {
+                anchors.centerIn: parent
+                Image {
+                    source: "icons/search.png"
+                }
+
+                Text {
+                    text: "Search"
+                    color: "#fff"
+                    font.pixelSize: 24
+                }
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: searchPanel.showSearch = true
+            }
+        }
+
+        Rectangle {
+            height: 40
+            width: searchPanel.width / 2
+            color: "black"
+            z: 1
+            opacity: searchPanel.showSearch ? 0.5 : 1
+            Row {
+                anchors.centerIn: parent
+                Image {
+                    source: "icons/bookmarks.png"
+                }
+
+                Text {
+                    text: "Bookmarks"
+                    color: "#fff"
+                    font.pixelSize: 24
+                }
+            }
+            MouseArea {
+                anchors.fill: parent
+                onClicked: searchPanel.showSearch = false
+            }
+        }
+    }
     
     ListView {
         id: searchList
@@ -109,10 +167,11 @@ Rectangle {
         highlightFollowsCurrentItem: false
         width: rec.width
         height: searchPanel.height - 50
-        topMargin: 50
-        model: searchModel
+        topMargin: searchPanel.showSearch ? 50 : 10
+        model: searchPanel.showSearch ? searchModel : favModel
         delegate: delegate
-        
+        z: -1
+
         Rectangle {
             id: rectangle1
             height: 30
@@ -125,6 +184,7 @@ Rectangle {
             anchors.rightMargin: 20
             anchors.left: parent.left
             anchors.leftMargin: 20
+            visible: searchPanel.showSearch
             Text {
                 id: name
                 text: searchInput.text == '' ? 'Search...' : '';
@@ -151,11 +211,12 @@ Rectangle {
 
                 onAccepted: {
                     console.log("SEARCH")
-                    
+
                     exv.searchVideo(searchInput.text)
 //                    searchInput.focus = false
                 }
             }
         }
+    }
     }
 }

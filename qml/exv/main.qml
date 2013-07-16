@@ -13,6 +13,7 @@ Rectangle {
     property string coverUrl: ""
     property bool showPlaylist: false
     property int currentFileIndex: -1
+    property string currentId: ""
 
     VideoView {
         enabled: false

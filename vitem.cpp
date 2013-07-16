@@ -41,6 +41,11 @@ void VItem::read(QDataStream &stream)
     stream >> m_image;
 }
 
+VItem *VItem::copy()
+{
+    return new VItem(m_name, m_desc, m_filesCount, m_exid, m_image);
+}
+
 QHash<int, QByteArray> VItem::roleNames() const
 {
   QHash<int, QByteArray> names;
