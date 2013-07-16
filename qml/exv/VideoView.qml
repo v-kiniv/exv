@@ -434,6 +434,7 @@ Rectangle {
                 text: videoPlayerItem.getTime(mediaplayer.position)
                 color: "#fff"
                 font.pixelSize: 10
+                renderType: Text.NativeRendering
             }
 
             Text {
@@ -441,6 +442,7 @@ Rectangle {
                 color: "#fff"
                 anchors.right: parent.right
                 font.pixelSize: 10
+                renderType: Text.NativeRendering
             }
 
             Rectangle {

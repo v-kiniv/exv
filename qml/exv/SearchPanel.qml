@@ -32,6 +32,13 @@ Rectangle {
 
     }
 
+    Keys.onEscapePressed: {
+        exv.quit()
+    }
+
+    Keys.onRightPressed: showSearch = false
+    Keys.onLeftPressed: showSearch = true
+
     // Search ListView
     Component {
            id: highlightBar

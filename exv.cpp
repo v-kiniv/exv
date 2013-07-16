@@ -45,6 +45,12 @@ void Exv::delFromFav(QString id)
     }
 }
 
+void Exv::quit()
+{
+    save();
+    m_Viewer->close();
+}
+
 void Exv::load()
 {
     m_sAppPath = QDir::homePath() + "/.config/exv";

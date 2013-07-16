@@ -28,6 +28,7 @@ public:
 
     Q_INVOKABLE bool addToFav(QString id);
     Q_INVOKABLE void delFromFav(QString id);
+    Q_INVOKABLE void quit();
     
 signals:
     
