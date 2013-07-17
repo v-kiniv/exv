@@ -43,7 +43,7 @@ Rectangle {
     Component {
            id: highlightBar
            Rectangle {
-               width: searchPanel.width; height: 150
+               width: searchPanel.width; height: searchList.currentItem.height
                color: "#080809"
                y: searchList.currentItem.y;
                Behavior on y { SpringAnimation { spring: 2; damping: 0.1; mass: 0.3 } }
@@ -54,18 +54,20 @@ Rectangle {
         id: delegate
         Item {
             id: wrapper
-            height: 150
+            height: itemName.height+itemDesc.height+30
             x: 20
-
             width: searchPanel.width
+
             Column {
                 spacing: 10
                 Text {
-                    height: 30
+                    id: itemName
+                    width: searchPanel.width-50
                     color: "#b8dffd"
                     text: name
                     font.pointSize: 16
                     renderType: Text.NativeRendering
+                    wrapMode: Text.Wrap
                 }
                 Row {
                     spacing: 20
@@ -75,10 +77,12 @@ Rectangle {
                     }
 
                     Text {
-                        height: 100
+                        id: itemDesc
+                        width: searchPanel.width-50
                         color: "#f9f4f4"
                         text: desc+"<br><b>"+filesCount+"</b> files"
                         renderType: Text.NativeRendering
+                        wrapMode: Text.Wrap
                     }
                 }
 
@@ -179,7 +183,7 @@ Rectangle {
         highlight: highlightBar
         highlightFollowsCurrentItem: false
         width: rec.width
-        height: searchPanel.height - 50
+        height: searchPanel.height - 80
         topMargin: searchPanel.showSearch ? 50 : 10
         model: searchPanel.showSearch ? searchModel : favModel
         delegate: delegate
