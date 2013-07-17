@@ -316,6 +316,23 @@ Rectangle {
     }
 
     Rectangle {
+        height: 15
+        width: 40
+        radius: 3
+        x: seekMouseArea.mouseX - width / 2
+        y: panel.y - 20
+        visible: seekMouseArea.containsMouse
+        color: "#085B76"
+        Text {
+            anchors.centerIn: parent
+            text: videoPlayerItem.getTime(
+                      Math.floor(
+                          (seekMouseArea.mouseX / seekRect.width) * mediaplayer.duration));
+            color: "white"
+        }
+    }
+
+    Rectangle {
         id: panel
         height: 70
         width: rec.width
@@ -408,7 +425,7 @@ Rectangle {
 
             MouseArea {
                 id: seekMouseArea
-
+                hoverEnabled: true
                 width: parent.width
                 height: 10
                 anchors.bottom: parent.bottom
@@ -429,6 +446,7 @@ Rectangle {
                 bottom: parent.bottom
 
             }
+
             ////////////////////////////////////////////////////////////////////
 
             Text {
