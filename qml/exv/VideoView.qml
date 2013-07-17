@@ -240,6 +240,7 @@ Rectangle {
             id: befferBar
             anchors.horizontalCenter: parent.horizontalCenter
             y: 50
+            width: bufferingText.width
             visible: befferBar.val < 1
             property double val: 1
             Text {
