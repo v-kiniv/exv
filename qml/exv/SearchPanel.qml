@@ -54,7 +54,7 @@ Rectangle {
         id: delegate
         Item {
             id: wrapper
-            height: itemName.height+itemDesc.height+30
+            height: itemName.height + itemRow.height + 30
             x: 20
             width: searchPanel.width
 
@@ -70,6 +70,7 @@ Rectangle {
                     wrapMode: Text.Wrap
                 }
                 Row {
+                    id: itemRow
                     spacing: 20
 
                     Image {
@@ -77,7 +78,6 @@ Rectangle {
                     }
 
                     Text {
-                        id: itemDesc
                         width: searchPanel.width-50
                         color: "#f9f4f4"
                         text: desc+"<br><b>"+filesCount+"</b> files"

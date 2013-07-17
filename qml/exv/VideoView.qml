@@ -24,30 +24,21 @@ Rectangle {
         id: videoPlayerItem
         anchors.fill: parent
         property bool isPlaying: mediaplayer.playbackState == MediaPlayer.PlayingState // property to know if videoPlaying id ongoing or not
-        /*
-                                                                                                               Functions Which starts Video Playing
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  */
+
         function playVideo() {
             //            mediaplayer.volume = 1.0
             mediaplayer.play()
         }
-        /*
-                                                                                                               Function Which Stops Video Playing
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  */
+
         function stopVideo() {
             mediaplayer.stop()
         }
-        /*
-                                                                                                               Function Which Stops Video Playing
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  */
+
         function pauseVideo() {
             mediaplayer.pause()
         }
 
         function playPauseVideo() {
-//            console.log('pos: '+mediaplayer.position);
-//            console.log('total: '+mediaplayer.duration);
-//            console.log('delta: ' + parseInt(mediaplayer.duration - mediaplayer.position));
             if (mediaplayer.playbackState == MediaPlayer.PlayingState) {
                 mediaplayer.pause()
             } else {
@@ -96,7 +87,6 @@ Rectangle {
         }
 
         function addToFav() {
-//            console.log("Try to add: " + currentId)
             if(exv.addToFav(currentId))
                 console.log("Added to fav")
             else
@@ -123,8 +113,6 @@ Rectangle {
             hoverEnabled: true
             anchors.fill: parent
             onClicked: {
-                //                console.log("Button clicked: " + mediaplayer.metaData.resolution.width)
-                //                console.log("Button clicked: " + videoout.width)
                 videoPlayerItem.playPauseVideo()
             }
             onDoubleClicked: {
@@ -147,9 +135,6 @@ Rectangle {
                           || playlistPanel.show) ? Qt.ArrowCursor : Qt.BlankCursor
         }
 
-        /*
-                                                                                                               Actual QML based Video Component
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  */
         MediaPlayer {
             id: mediaplayer
             onPositionChanged: {
@@ -157,7 +142,6 @@ Rectangle {
             }
 
             onVolumeChanged: {
-                console.log("volume changed: " + mediaplayer.volume)
                 volumeBar.position = parseInt(mediaplayer.volume * 100)
             }
 
@@ -176,7 +160,6 @@ Rectangle {
             }
 
             onBufferProgressChanged: {
-//                console.log("Buffer: "+bufferProgress)
                 befferBar.val = bufferProgress
             }
 
@@ -263,8 +246,8 @@ Rectangle {
         anchors.fill: parent
         source: videoout
         brightness: -0.7
-        contrast: 0
-        visible: mediaplayer.playbackState == MediaPlayer.PausedState
+        contrast: -0.7
+        visible: !videoPlayerItem.isPlaying
     }
 
     Item {
@@ -329,6 +312,7 @@ Rectangle {
                       Math.floor(
                           (seekMouseArea.mouseX / seekRect.width) * mediaplayer.duration));
             color: "white"
+            renderType: Text.NativeRendering
         }
     }
 
