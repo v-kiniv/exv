@@ -11,7 +11,10 @@ VItem::VItem(const QString &name,
   m_desc(desc),
   m_exid(exid),
   m_image(image),
-  m_filesCount(filesCount)
+  m_filesCount(filesCount),
+  m_cutCast(false),
+  m_castBegin(0),
+  m_castEnd(0)
 {
 }
 
@@ -25,11 +28,14 @@ void VItem::setName(QString name)
 
 void VItem::write(QDataStream &stream)
 {
-    stream << name();
-    stream << desc();
-    stream << filesCount();
-    stream << exid();
-    stream << image();
+    stream << m_name;
+    stream << m_desc;
+    stream << m_filesCount;
+    stream << m_exid;
+    stream << m_image;
+    stream << m_cutCast;
+    stream << m_castBegin;
+    stream << m_castEnd;
 }
 
 void VItem::read(QDataStream &stream)
@@ -39,6 +45,9 @@ void VItem::read(QDataStream &stream)
     stream >> m_filesCount;
     stream >> m_exid;
     stream >> m_image;
+    stream >> m_cutCast;
+    stream >> m_castBegin;
+    stream >> m_castEnd;
 }
 
 VItem *VItem::copy()

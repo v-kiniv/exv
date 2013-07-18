@@ -25,6 +25,10 @@ Rectangle {
         anchors.fill: parent
         property bool isPlaying: mediaplayer.playbackState == MediaPlayer.PlayingState // property to know if videoPlaying id ongoing or not
 
+        property bool cutCast: false
+        property int castBegin: 71000
+        property int castEnd: 111000
+
         function playVideo() {
             //            mediaplayer.volume = 1.0
             mediaplayer.play()
@@ -139,6 +143,10 @@ Rectangle {
             id: mediaplayer
             onPositionChanged: {
                 seekBar.position = mediaplayer.position
+                if(videoPlayerItem.cutCast) {
+                    if(mediaplayer.position > videoPlayerItem.castBegin && mediaplayer.position < videoPlayerItem.castBegin + 1000)
+                        mediaplayer.seek(videoPlayerItem.castEnd)
+                }
             }
 
             onVolumeChanged: {
@@ -374,7 +382,21 @@ Rectangle {
             }
             color: videoPlayerItem.isPlaying && !panel.show ? "transparent" : "#476495"
             smooth: true
-
+/////////////
+            Rectangle {
+                id: castBar
+                width: Math.floor(
+                           seekRect.width * (videoPlayerItem.castEnd / mediaplayer.duration)) - x
+                x: Math.floor(
+                       seekRect.width * (videoPlayerItem.castBegin / mediaplayer.duration))
+                height: seekRect.height
+                anchors.bottom: seekRect.bottom
+                color: videoPlayerItem.isPlaying && !panel.show ? "transparent" :  "#EDDA45"
+                opacity: 0.3
+                smooth: true
+                visible: videoPlayerItem.cutCast
+            }
+/////////////
             Rectangle {
                 id: seekBar
                 width: Math.floor(

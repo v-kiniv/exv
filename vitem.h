@@ -1,4 +1,5 @@
 #include "listmodel.h"
+#include <QDataStream>
 
 class VItem : public ListItem
 {
@@ -19,6 +20,9 @@ public:
   QVariant data(int role) const;
   QHash<int, QByteArray> roleNames() const;
   void setName(QString name);
+  void setCutCast(bool s) { m_cutCast = s; }
+  void setCastBegin(qint64 pos) { m_castBegin = pos; }
+  void setCastEnd(qint64 pos) { m_castEnd = pos; }
   inline QString id() const { return m_exid; }
   Q_INVOKABLE inline QString name() const { return m_name; }
   Q_INVOKABLE inline QString desc() const { return m_desc; }
@@ -35,4 +39,7 @@ private:
   QString m_filesCount;
   QString m_exid;
   QString m_image;
+  bool m_cutCast;
+  qint64 m_castBegin;
+  qint64 m_castEnd;
 };
