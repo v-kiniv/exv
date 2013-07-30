@@ -128,9 +128,9 @@ Rectangle {
         Rectangle {
             height: 40
             width: searchPanel.width / 2
-            color: "black"
+            color: !searchPanel.showSearch ? "#5A5A5A" : "#377E7E"
             z: 1
-            opacity: !searchPanel.showSearch ? 0.5 : 1
+//            opacity: !searchPanel.showSearch ? 0.5 : 1
             Row {
                 anchors.centerIn: parent
                 Image {
@@ -154,9 +154,9 @@ Rectangle {
         Rectangle {
             height: 40
             width: searchPanel.width / 2
-            color: "black"
+            color: searchPanel.showSearch ? "#5A5A5A" : "#377E7E"
             z: 1
-            opacity: searchPanel.showSearch ? 0.5 : 1
+//            opacity: searchPanel.showSearch ? 0.5 : 1
             Row {
                 anchors.centerIn: parent
                 Image {
