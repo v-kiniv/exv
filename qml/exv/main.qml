@@ -15,14 +15,16 @@ Rectangle {
     property int currentFileIndex: -1
     property string currentId: ""
 
+
     VideoView {
-        enabled: false
+        enabled: true
+        focus: true
         id: videoView
     }
 
     SearchPanel {
-        visible: true
-        focus: true
+        visible: false
+        focus: false
         id: searchPanel
     }
 }

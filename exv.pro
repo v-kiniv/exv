@@ -12,7 +12,7 @@ QML_IMPORT_PATH =
 # CONFIG += mobility
 # MOBILITY +=
 
-QT += core network qml
+QT += core network qml multimedia
 
 # The .cpp file which was generated for your project. Feel free to hack it.
 HEADERS += exv.h \
@@ -21,7 +21,9 @@ HEADERS += exv.h \
            listmodel.h \
     vitem.h \
     pitem.h \
-    parser.h
+    parser.h \
+    videoadapter.h \
+    buffer.h
 
 SOURCES += main.cpp \
            exv.cpp \
@@ -29,7 +31,9 @@ SOURCES += main.cpp \
            listmodel.cpp \
     vitem.cpp \
     pitem.cpp \
-    parser.cpp
+    parser.cpp \
+    videoadapter.cpp \
+    buffer.cpp
 
 
 

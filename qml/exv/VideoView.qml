@@ -7,6 +7,7 @@ Rectangle {
     anchors.fill: parent
     color: "#000"
 
+
     onHeightChanged: {
         panel.enabledAnimation = false
         panel.expandedY = rec.height - panel.height
@@ -23,7 +24,8 @@ Rectangle {
         //        visible: false;
         id: videoPlayerItem
         anchors.fill: parent
-        property bool isPlaying: mediaplayer.playbackState == MediaPlayer.PlayingState // property to know if videoPlaying id ongoing or not
+//        property bool isPlaying: player.playbackState == MediaPlayer.PlayingState // property to know if videoPlaying id ongoing or not
+        property bool isPlaying: player.playbackState == 1
 
         property bool cutCast: false
         property int castBegin: 71000
@@ -39,23 +41,24 @@ Rectangle {
         }
 
         function pauseVideo() {
-            mediaplayer.pause()
+            player.pause()
         }
 
         function playPauseVideo() {
-            if (mediaplayer.playbackState == MediaPlayer.PlayingState) {
-                mediaplayer.pause()
+//            videoView.focusOnPlayer() // REMOVE THIS
+            if (videoPlayerItem.isPlaying) {
+                player.pause()
             } else {
-                mediaplayer.play()
+                player.play()
             }
         }
 
         function volUp() {
-            mediaplayer.volume = mediaplayer.volume > 0.90 ? 1 : mediaplayer.volume + 0.1
+            player.volume = player.volume > 90 ? 100 : player.volume + 10
         }
 
         function volDown() {
-            mediaplayer.volume = mediaplayer.volume < 0.1 ? 0 : mediaplayer.volume - 0.1
+            player.volume = player.volume < 10 ? 0 : player.volume - 10
         }
 
         function next() {
@@ -83,11 +86,14 @@ Rectangle {
         }
 
         function sourceChanged() {
-            mediaplayer.stop()
-            mediaplayer.source = ""
-            mediaplayer.source = playlistModel.getItem(currentFileIndex).getUrl()
+//            mediaplayer.stop()
+//            mediaplayer.source = ""
+//            mediaplayer.source = playlistModel.getItem(currentFileIndex).getUrl()
+//            subTitle = playlistModel.getItem(currentFileIndex).getName()
+//            mediaplayer.play()
+            exv.setSource(playlistModel.getItem(currentFileIndex).getUrl())
             subTitle = playlistModel.getItem(currentFileIndex).getName()
-            mediaplayer.play()
+//            player.play()
         }
 
         function addToFav() {
@@ -141,13 +147,13 @@ Rectangle {
 
         MediaPlayer {
             id: mediaplayer
-            onPositionChanged: {
-                seekBar.position = mediaplayer.position
-                if(videoPlayerItem.cutCast) {
-                    if(mediaplayer.position > videoPlayerItem.castBegin && mediaplayer.position < videoPlayerItem.castBegin + 1000)
-                        mediaplayer.seek(videoPlayerItem.castEnd)
-                }
-            }
+//            onPositionChanged: {
+//                seekBar.position = mediaplayer.position
+//                if(videoPlayerItem.cutCast) {
+//                    if(mediaplayer.position > videoPlayerItem.castBegin && mediaplayer.position < videoPlayerItem.castBegin + 1000)
+//                        mediaplayer.seek(videoPlayerItem.castEnd)
+//                }
+//            }
 
             onVolumeChanged: {
                 volumeBar.position = parseInt(mediaplayer.volume * 100)
@@ -167,21 +173,22 @@ Rectangle {
                 }
             }
 
-            onBufferProgressChanged: {
-                befferBar.val = bufferProgress
-            }
+//            onBufferProgressChanged: {
+//                befferBar.val = bufferProgress
+//            }
 
         }
 
         VideoOutput {
             id: videoout
             anchors.fill: parent
-            source: mediaplayer
+//            source: mediaplayer
+            source: player
             fillMode: VideoOutput.PreserveAspectFit
             focus: true
             Keys.onSpacePressed: videoPlayerItem.playPauseVideo()
-            Keys.onLeftPressed: mediaplayer.seek(mediaplayer.position - 10000)
-            Keys.onRightPressed: mediaplayer.seek(mediaplayer.position + 10000)
+            Keys.onLeftPressed: player.seek(player.position - 10000)
+            Keys.onRightPressed: player.seek(player.position + 10000)
 
             Keys.onDigit1Pressed: {
                 videoout.fillMode = VideoOutput.PreserveAspectFit
@@ -232,12 +239,13 @@ Rectangle {
             anchors.horizontalCenter: parent.horizontalCenter
             y: 50
             width: bufferingText.width
-            visible: befferBar.val < 1
-            property double val: 1
+//            visible: befferBar.val < 1
+            visible: true
+            property int val: 0
             Text {
                 id: bufferingText
                 color: "#FFBF00"
-                text: "Buffering: <b>" + parseInt(befferBar.val * 100) + "</b>%"
+                text: "Buffering: " + player.bufferCurrent + " of " + player.bufferTotal
             }
         }
     }
@@ -250,13 +258,13 @@ Rectangle {
     //        transparentBorder: false
     //        visible: mediaplayer.playbackState == MediaPlayer.PausedState
     //    }
-    BrightnessContrast {
-        anchors.fill: parent
-        source: videoout
-        brightness: -0.7
-        contrast: -0.7
-        visible: !videoPlayerItem.isPlaying
-    }
+//    BrightnessContrast {
+//        anchors.fill: parent
+//        source: videoout
+//        brightness: -0.7
+//        contrast: -0.7
+//        visible: !videoPlayerItem.isPlaying
+//    }
 
     Item {
         id: coverTitle
@@ -264,8 +272,7 @@ Rectangle {
         height: rec.height - 200
         //        color: transparent
         anchors.centerIn: parent
-        visible: mediaplayer.playbackState == MediaPlayer.PausedState
-                 || mediaplayer.playbackState == MediaPlayer.StoppedState
+        visible: !videoPlayerItem.isPlaying
 
         Column {
             Image {
@@ -318,7 +325,7 @@ Rectangle {
             anchors.centerIn: parent
             text: videoPlayerItem.getTime(
                       Math.floor(
-                          (seekMouseArea.mouseX / seekRect.width) * mediaplayer.duration));
+                          (seekMouseArea.mouseX / seekRect.width) * player.duration));
             color: "white"
             renderType: Text.NativeRendering
         }
@@ -384,31 +391,32 @@ Rectangle {
             smooth: true
 /////////////
             Rectangle {
-                id: castBar
+                id: bufferBar
                 width: Math.floor(
-                           seekRect.width * (videoPlayerItem.castEnd / mediaplayer.duration)) - x
-                x: Math.floor(
-                       seekRect.width * (videoPlayerItem.castBegin / mediaplayer.duration))
-                height: seekRect.height
+                           seekRect.width * ((player.bufferCurrent / player.bufferTotal)) - 20)
+//                x: Math.floor(
+//                       seekRect.width * (videoPlayerItem.castBegin / player.duration))
+                height: 1
                 anchors.bottom: seekRect.bottom
                 color: videoPlayerItem.isPlaying && !panel.show ? "transparent" :  "#EDDA45"
-                opacity: 0.3
+                opacity: 0.8
                 smooth: true
-                visible: videoPlayerItem.cutCast
+                visible: true
             }
 /////////////
             Rectangle {
                 id: seekBar
                 width: Math.floor(
-                           seekRect.width * (seekBar.position / mediaplayer.duration))
+                           seekRect.width * (seekBar.position / player.duration))
                 height: seekRect.height
                 anchors.bottom: seekRect.bottom
                 color: videoPlayerItem.isPlaying && !panel.show ? "transparent" :  "#6BBAD3"
                 smooth: true
 
-                property int position: 0
 
-                Behavior on position {
+                property int position: player.position
+
+                Behavior on width {
                     SmoothedAnimation {
                         velocity: 500
                         duration: 200
@@ -436,9 +444,9 @@ Rectangle {
                 height: 10
                 anchors.bottom: parent.bottom
                 enabled: true
-                onClicked: mediaplayer.seek(
+                onClicked: player.seek(
                                Math.floor(
-                                   (mouseX / seekRect.width) * mediaplayer.duration))
+                                   (mouseX / seekRect.width) * player.duration))
             }
         }
 
@@ -456,14 +464,14 @@ Rectangle {
             ////////////////////////////////////////////////////////////////////
 
             Text {
-                text: videoPlayerItem.getTime(mediaplayer.position)
+                text: videoPlayerItem.getTime(player.position)
                 color: "#fff"
                 font.pixelSize: 10
                 renderType: Text.NativeRendering
             }
 
             Text {
-                text: videoPlayerItem.getTime(mediaplayer.duration)
+                text: videoPlayerItem.getTime(player.duration)
                 color: "#fff"
                 anchors.right: parent.right
                 font.pixelSize: 10
@@ -486,7 +494,7 @@ Rectangle {
                     id: volumeBar
                     radius: 8
 
-                    property int position: parseInt(mediaplayer.volume * 100)
+                    property int position: player.volume
 
                     width: Math.floor(
                                volumeRect.width * (volumeBar.position / 100 ))
@@ -520,16 +528,16 @@ Rectangle {
                 MouseArea {
                     id: volumeMouseArea
 
-                    property double val: mouseX >= 0 && mouseX <= parent.width ? 1 / (parent.width / mouseX) : volumeMouseArea.val
+                    property double val: mouseX >= 0 && mouseX <= parent.width ? 100 / (parent.width / mouseX) : volumeMouseArea.val
 
                     width: parent.width
                     height: 10
                     anchors.bottom: parent.bottom
                     enabled: true
-                    onClicked: mediaplayer.volume = val
-                    onMouseXChanged: mediaplayer.volume = val
+                    onClicked: player.volume = val
+                    onMouseXChanged: player.volume = val
                     onWheel: {
-                        wheel.angleDelta.y > 0 ? mediaplayer.volume += 0.1 : mediaplayer.volume -= 0.1
+                        wheel.angleDelta.y > 0 ? videoPlayerItem.volUp() : videoPlayerItem.volDown()
                     }
                 }
             }
