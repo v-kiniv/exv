@@ -43,7 +43,7 @@ void Exua::searchReply(QByteArray data)
 
     m_searchModel->clear();
 
-    QRegExp rxTd("<tr><td><a href='/([\\d]*)'><img src='(.*)\\?[\\d]+' width='[\\d]+' height='[\\d]+' border='0' align='left' style='.*' alt='.*'></a><a href='/[\\d]+'><b>(.*)</b></a><br><a href='/user/.*'>.*</a>.*<p>(.*)<p><a href='/view_comments/\\1' class=info>.*</a><p><small>Файлов: ([\\d]*).*</small></td></tr>");
+    QRegExp rxTd("<tr><td><a href='/([\\d]*)'><img src='(.*)\\?[\\d]+' width='[\\d]+' height='[\\d]+' border='0' align='left' style='.*' alt='.*'></a><a href='/[\\d]+'><b>(.*)</b></a><br><a href='/user/.*'>.*</a>.*<p>(.*)<p><small>Файлов: ([\\d]*).*</small></td></tr>");
     rxTd.setMinimal(true);
 
 
