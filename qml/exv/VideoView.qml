@@ -200,6 +200,7 @@ Rectangle {
             Keys.onUpPressed: {
                 if(!showPlaylist) {
                     videoPlayerItem.volUp()
+                    volumeIndicator.show = true
                 } else {
                     playlistPanel.listUp()
                 }
@@ -208,6 +209,7 @@ Rectangle {
             Keys.onDownPressed: {
                 if(!showPlaylist) {
                     videoPlayerItem.volDown()
+                    volumeIndicator.show = true
                 } else {
                     playlistPanel.listDown()
                 }
@@ -238,6 +240,44 @@ Rectangle {
                 id: bufferingText
                 color: "#FFBF00"
                 text: "Buffering: <b>" + parseInt(befferBar.val * 100) + "</b>%"
+            }
+        }
+
+        Rectangle {
+            id: volumeIndicator
+            color: "#000000"
+            width: 251
+            height: 28
+            border.color: "black"
+            border.width: 1
+            visible: volumeIndicator.show
+
+            property bool show: false
+
+            anchors.centerIn: parent
+            opacity: 0.7
+            Row {
+                id: iRow
+                anchors.verticalCenter: parent.verticalCenter
+
+                Repeater {
+                    model: parseInt(mediaplayer.volume * 100) / 10
+                    Rectangle {
+                        width: 25
+                        height: 25
+                        anchors.verticalCenter: iRow.verticalCenter
+                        color: "transparent"
+
+                        Rectangle {
+                            color: "#FFFFFF"
+                            width: 20
+                            height: 20
+                            anchors.centerIn: parent
+                        }
+                    }
+
+
+                }
             }
         }
     }
@@ -602,6 +642,17 @@ Rectangle {
             onTriggered: {
                 if (panel.show)
                     panel.show = false
+            }
+        }
+
+        Timer {
+            id: volumeTimer
+            interval: 2000
+            running: volumeIndicator.show
+            repeat: false
+            onTriggered: {
+                if (volumeIndicator.show)
+                    volumeIndicator.show = false
             }
         }
     }
